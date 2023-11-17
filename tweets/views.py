@@ -1,19 +1,22 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from . models import Tweet, Comment
-from users.models import User
-from . serializers import TweetSerializer, MyTweetSerializer, CommentSerializer
-from .permissions import IsUserOrReadOnly
 from backend.pagination import CustomPagination
 from noti.models import Noti
+from users.models import User
+
+from .models import Comment, Tweet
+from .permissions import IsUserOrReadOnly
+from .serializers import CommentSerializer, MyTweetSerializer, TweetSerializer
+
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsUserOrReadOnly]
+
 
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
@@ -37,10 +40,11 @@ class CommentList(generics.ListCreateAPIView):
             user=request.user,
             body=data['body'],
             tweet=tweet
-                )
+        )
         comment.save()
         if request.user != tweet.user:
-            Noti.objects.get_or_create(type='replied your tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
+            Noti.objects.get_or_create(
+                type='replied your tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
         serializer = CommentSerializer(comment, many=False)
         return Response(serializer.data)
 
@@ -52,6 +56,7 @@ def get_user_likes(request, username):
     tweets = Tweet.objects.filter(liked=user)
     serializer = MyTweetSerializer(tweets, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -71,8 +76,10 @@ def like(request, pk):
     else:
         tweet.liked.add(request.user)
         if request.user != tweet.user:
-            Noti.objects.get_or_create(type='like you tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
+            Noti.objects.get_or_create(
+                type='like you tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
     return Response({'status': 'ok'})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -83,8 +90,10 @@ def rt(request, pk):
     else:
         tweet.retweeted.add(request.user)
         if request.user != tweet.user:
-            Noti.objects.get_or_create(type='retweeted you tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
+            Noti.objects.get_or_create(
+                type='retweeted you tweet', tweet=tweet, to_user=tweet.user, from_user=request.user)
     return Response({'status': 'ok'})
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -94,6 +103,7 @@ def get_user_tweets(request, username):
     serializer = MyTweetSerializer(tweets, many=True)
     return Response(serializer.data)
 
+
 class TweetList(generics.ListCreateAPIView):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
@@ -102,6 +112,7 @@ class TweetList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tweet.objects.all()

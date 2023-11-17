@@ -43,7 +43,7 @@ const Feed = () => {
           <div>
             <div className="flex flex-row items-center gap-2">
               <p className="text-white font-semibold text-xl">
-                Home
+                Inicio
               </p>
             </div>
           </div>

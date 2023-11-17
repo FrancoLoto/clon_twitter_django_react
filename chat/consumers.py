@@ -1,7 +1,10 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 from channels.db import database_sync_to_async
-from . models import Chat
+from channels.generic.websocket import AsyncWebsocketConsumer
+
+from .models import Chat
+
 
 class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -13,7 +16,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         else:
             self.room_name = f'{self.my_user}-{self.other_username}'
 
-        self.room_group_name = f'chat_%s' % self.room_name
+        self.room_group_name = f'{"chat_%s" % self.room_name}'
 
         await self.channel_layer.group_add(
             self.room_group_name,

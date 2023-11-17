@@ -1,10 +1,12 @@
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import User
-from . models import Chat
-from . serializers import ChatSerializer
+
+from .models import Chat
+from .serializers import ChatSerializer
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

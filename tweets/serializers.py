@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from . models import Tweet, Comment
+
+from .models import Comment, Tweet
+
 
 class CommentSerializer(serializers.ModelSerializer):
 
@@ -13,6 +15,7 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_avatar(self, obj):
         return obj.user.avatar.url
 
+
 class MyTweetSerializer(serializers.ModelSerializer):
 
     likes_count = serializers.SerializerMethodField(read_only=True)
@@ -22,12 +25,12 @@ class MyTweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['id', 'user', 
-                  'avatar', 
-                  'content', 
-                  'image', 'liked', 
-                  'retweeted', 'created_at', 
-                  'likes_count', 'retweets_count','parent']
+        fields = ['id', 'user',
+                  'avatar',
+                  'content',
+                  'image', 'liked',
+                  'retweeted', 'created_at',
+                  'likes_count', 'retweets_count', 'parent']
 
     def get_avatar(self, obj):
         return obj.user.avatar.url
@@ -37,6 +40,7 @@ class MyTweetSerializer(serializers.ModelSerializer):
 
     def get_retweets_count(self, obj):
         return obj.retweeted.all().count()
+
 
 class TweetSerializer(serializers.ModelSerializer):
 
@@ -51,12 +55,11 @@ class TweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['id', 'user', 
-                  'avatar', 
-                  'content', 
-                  'image', 'liked', 'retweeted', 'created_at', 'likes_count', 'retweets_count', 'iliked', 'iretweeted', 'parent']
-
-
+        fields = ['id', 'user',
+                  'avatar',
+                  'content',
+                  'image', 'liked', 'retweeted', 'created_at', 'likes_count', 'retweets_count', 'iliked', 'iretweeted',
+                  'parent']
 
     def get_avatar(self, obj):
         return obj.user.avatar.url

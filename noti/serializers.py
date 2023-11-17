@@ -1,9 +1,12 @@
 from rest_framework import serializers
-from . models import Noti
+
 from tweets.serializers import MyTweetSerializer
 
+from .models import Noti
+
+
 class NotiSerializer(serializers.ModelSerializer):
-    
+
     to_user = serializers.ReadOnlyField(source='to_user.username')
     avatar = serializers.ReadOnlyField(source='to_user.avatar.url')
     from_user = serializers.ReadOnlyField(source='from_user.username')

@@ -1,6 +1,8 @@
+from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
+                                        UserManager)
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -29,7 +31,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=200, unique=True)
     email = models.CharField(max_length=200, unique=True)
     name = models.CharField(max_length=255, blank=True)
-    following = models.ManyToManyField("self",symmetrical=False,related_name="followed" ,blank=True)
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followed", blank=True)
     bio = models.CharField(max_length=255, blank=True)
     avatar = models.ImageField(default='user.png')
     cover_image = models.ImageField(default='cover.png')
@@ -48,6 +51,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def followed_usernames(self):
         return [{'username': user.username, 'avatar': user.avatar.url} for user in self.followed.all()]
-
-
-    
